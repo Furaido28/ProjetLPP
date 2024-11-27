@@ -1,8 +1,11 @@
+//  Nom     :   Flipo       Makhloufi
+//  Prénom  :   Ethan       Olivia
+//  Classe  :   2BIA1
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// TEST
 // --------------------------
 // Déclaration des structures
 // --------------------------
