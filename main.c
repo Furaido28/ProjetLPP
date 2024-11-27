@@ -26,10 +26,12 @@ typedef struct store {
 // ---------------------------------
 // Prototypes des fonctions
 // ---------------------------------
-store *creerMagasin(char *nom_magasin);
-store *rechercherMagasin(store *head, char *nom_magasin);
-void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char *nom_marque, char *nom_rayon, int quantite, float prix);
-void afficherMagasinsEtProduits(store *head);
+store *creerMagasin(char*);
+store *rechercherMagasin(store*, char*);
+void ajouterProduit(store*, char*, char*, char*, char*, int, float);
+void supprimerProduit(store*, char*, char*);
+void afficherMagasinsEtProduits(store*);
+int afficherMenu();
 
 // -------------
 // Fonction main
@@ -42,13 +44,7 @@ int main() {
     float prixProduit;
 
     do {
-        printf("\nFaites un choix\n");
-        printf("1. Ajouter un produit\n");
-        printf("2. Afficher les magasins et produits\n");
-        printf("   ------\n");
-        printf("3. Fermer le programme\n");
-        printf("> ");
-        scanf("%d", &input);
+        input = afficherMenu();
 
         switch (input) {
             case 1: {
@@ -63,7 +59,7 @@ int main() {
                     listeMagasins = magasin;
                 }
 
-                // Saisir les d�tails du produit
+                // Saisir les détails du produit
                 printf("Nom du produit > ");
                 scanf("%s", nomProduit);
                 printf("Nom de la cat%cgorie > ", 130);
@@ -81,18 +77,34 @@ int main() {
                 ajouterProduit(magasin, nomProduit, nomCategorie, nomMarque, nomRayon, quantiteProduit, prixProduit);
                 break;
             }
-            case 2:
+            case 2: {
+                printf("\nNom du magasin > ");
+                scanf("%s", nomMagasin);
+
+                store *magasin = rechercherMagasin(listeMagasins, nomMagasin);
+                if (magasin == NULL) {
+                    printf("\nMagasin introuvable.\n");
+                    break;
+                }
+
+                printf("Nom du produit > ");
+                scanf("%s", nomProduit);
+                printf("Nom de la marque > ");
+                scanf("%s", nomMarque);
+
+                supprimerProduit(magasin, nomProduit, nomMarque);
+                break;
+            }
+            case 3:
                 afficherMagasinsEtProduits(listeMagasins);
                 break;
-
-            case 3:
+            case 10:
                 printf("\nFermeture du programme...\n");
                 break;
-
             default:
                 printf("Erreur - Veuillez s%clectionner une option valide.\n", 130);
         }
-    } while (input != 3);
+    } while (input != 10);
 
     return 0;
 }
@@ -101,7 +113,7 @@ int main() {
 // Fonctions pour les magasins
 // ----------------------------
 
-// Fonction pour cr�er un nouveau magasin
+// Fonction pour créer un nouveau magasin
 store *creerMagasin(char *nom_magasin) {
     store *nouveau = (store *)malloc(sizeof(store));
     strcpy(nouveau->nom_magasin, nom_magasin);
@@ -121,11 +133,9 @@ store *rechercherMagasin(store *head, char *nom_magasin) {
     return NULL;
 }
 
-// -----------------------------
-// Fonctions pour les produits
-// -----------------------------
-
-// Fonction pour ajouter un produit à un magasin
+// ------------------------
+// Fonction ajouterProduit
+// ------------------------
 void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char *nom_marque, char *nom_rayon, int quantite, float prix) {
     product *nouveau = (product *)malloc(sizeof(product));
 
@@ -134,6 +144,7 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
     strcpy(nouveau->nom_categorie, nom_categorie);
     strcpy(nouveau->nom_marque, nom_marque);
     strcpy(nouveau->nom_rayon, nom_rayon);
+    
     nouveau->quantite = quantite;
     nouveau->prix = prix;
     nouveau->suivant = NULL;
@@ -148,13 +159,45 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
         }
         tmp->suivant = nouveau;
     }
-
     printf("\nProduit '%s' ajout%c au magasin '%s' avec succ%cs.\n", nom_produit, 130, magasin->nom_magasin, 130);
 }
 
-// ----------------------------
+// --------------------------
+// Fonction supprimer produit
+// --------------------------
+
+// Fonction pour supprimer un produit
+void supprimerProduit(store *magasin, char *nom_produit, char *nom_marque) {
+    if (magasin == NULL || magasin->produits == NULL) {
+        printf("\nLe magasin est vide ou inexistant.\n");
+        return;
+    }
+
+    product *actuel = magasin->produits;
+    product *precedent = NULL;
+    
+    while (actuel != NULL) {
+        if (strcmp(actuel->nom_produit, nom_produit) == 0 && strcmp(actuel->nom_marque, nom_marque) == 0) {
+            if (precedent == NULL) {
+                // Le produit à supprimer est le premier de la liste
+                magasin->produits = actuel->suivant;
+            } else {
+                // Supprimer le produit du milieu ou de la fin
+                precedent->suivant = actuel->suivant;
+            }
+            free(actuel);
+            printf("\nProduit '%s' (Marque : %s) supprim%c avec succ%cs.\n", nom_produit, nom_marque, 130, 130);
+            return;
+        }
+        precedent = actuel;
+        actuel = actuel->suivant;
+    }
+    printf("\nProduit '%s' (Marque : %s) introuvable dans le magasin.\n", nom_produit, nom_marque);
+}
+
+// ----------------------
 // Affichage des données
-// ----------------------------
+// ----------------------
 
 // Fonction pour afficher les magasins et leurs produits
 void afficherMagasinsEtProduits(store *debut) {
@@ -186,3 +229,23 @@ void afficherMagasinsEtProduits(store *debut) {
     }
 }
 
+// -----------------
+// Affichage du menu
+// -----------------
+int afficherMenu() {
+    int input;
+    do {
+        printf("\nFaites un choix\n");
+        printf("1. Ajouter un produit\n");
+        printf("2. Supprimer un produit\n");
+        printf("3. Afficher les magasins et produits\n");
+        printf("   ------\n");
+        printf("10. Fermer le programme\n");
+        printf("> ");
+        scanf("%d", &input);
+        if (input < 1 || (input > 3 && input != 10)) {
+            printf("Erreur - Veuillez s%clectionner une option valide.\n", 130);
+        }
+    } while (input < 1 || (input > 3 && input != 10));
+    return input;
+}
