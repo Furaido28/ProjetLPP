@@ -125,7 +125,7 @@ store *rechercherMagasin(store *head, char *nom_magasin) {
 // Fonctions pour les produits
 // -----------------------------
 
-// Fonction pour ajouter un produit � un magasin
+// Fonction pour ajouter un produit à un magasin
 void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char *nom_marque, char *nom_rayon, int quantite, float prix) {
     product *nouveau = (product *)malloc(sizeof(product));
 
@@ -138,7 +138,7 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
     nouveau->prix = prix;
     nouveau->suivant = NULL;
 
-    // Ajouter le produit � la liste cha�n�e du magasin
+    // Ajouter le produit à la liste du magasin
     if (magasin->produits == NULL) {
         magasin->produits = nouveau;
     } else {
@@ -153,7 +153,7 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
 }
 
 // ----------------------------
-// Affichage des donn�es
+// Affichage des données
 // ----------------------------
 
 // Fonction pour afficher les magasins et leurs produits
