@@ -16,7 +16,7 @@ int afficherMenu() {
         printf("3. Afficher les magasins et produits\n");
         printf("   ------\n");
         printf("10. Fermer le programme\n");
-        printf("> ");
+        printf(">%c", 32);
         scanf("%d", &input);
         if (input < 1 || (input > 3 && input != 10)) {
             printf("Erreur - Veuillez s%clectionner une option valide.\n", 130);

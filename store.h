@@ -6,7 +6,7 @@
   #include <string.h>
 
   // --------------------------
-  // Déclaration des structures
+  // DÃ©claration des structures
   // --------------------------
 
   typedef struct product {

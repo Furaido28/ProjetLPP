@@ -1,6 +1,6 @@
 //  **********************************
 //  Nom     :   Flipo       Makhloufi
-//  Pr�nom  :   Ethan       Olivia
+//  Prénom  :   Ethan       Olivia
 //  Classe  :   2BIA1
 //  **********************************
 

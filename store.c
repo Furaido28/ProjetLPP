@@ -8,7 +8,7 @@
 // Fonctions pour les magasins
 // ----------------------------
 
-// Fonction pour créer un nouveau magasin
+// Fonction pour crï¿½er un nouveau magasin
 store *creerMagasin(char *nom_magasin) {
     store *nouveau = (store *)malloc(sizeof(store));
     strcpy(nouveau->nom_magasin, nom_magasin);
@@ -44,7 +44,7 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
     nouveau->prix = prix;
     nouveau->suivant = NULL;
 
-    // Ajouter le produit à la liste du magasin
+    // Ajouter le produit ï¿½ la liste du magasin
     if (magasin->produits == NULL) {
         magasin->produits = nouveau;
     } else {
@@ -74,7 +74,7 @@ void supprimerProduit(store *magasin, char *nom_produit, char *nom_marque) {
     while (actuel != NULL) {
         if (strcmp(actuel->nom_produit, nom_produit) == 0 && strcmp(actuel->nom_marque, nom_marque) == 0) {
             if (precedent == NULL) {
-                // Le produit à supprimer est le premier de la liste
+                // Le produit ï¿½ supprimer est le premier de la liste
                 magasin->produits = actuel->suivant;
             } else {
                 // Supprimer le produit du milieu ou de la fin
@@ -91,7 +91,7 @@ void supprimerProduit(store *magasin, char *nom_produit, char *nom_marque) {
 }
 
 // ----------------------
-// Affichage des données
+// Affichage des donnï¿½es
 // ----------------------
 
 // Fonction pour afficher les magasins et leurs produits
