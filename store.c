@@ -96,6 +96,7 @@ void supprimerProduit(store *magasin, char *nom_produit, char *nom_marque) {
 
 // Fonction pour afficher les magasins et leurs produits
 void afficherMagasinsEtProduits(store *debut) {
+    float total_prix;
     if (debut == NULL) {
         printf("\nAucun magasin trouv%c.\n", 130);
         return;
@@ -106,20 +107,23 @@ void afficherMagasinsEtProduits(store *debut) {
         printf("---------------------------\n");
 
         if (debut->produits == NULL) {
-            printf("\n  Aucun produit disponible.\n");
+            printf("  Aucun produit disponible.\n");
         } else {
-            product *tmp = debut->produits;
-            while (tmp != NULL) {
-                printf("  Produit : %s\n", tmp->nom_produit);
-                printf("    Cat%cgorie : %s\n", 130, tmp->nom_categorie);
-                printf("    Marque : %s\n", tmp->nom_marque);
-                printf("    Rayon : %s\n", tmp->nom_rayon);
-                printf("    Quantit%c : %d\n", 130, tmp->quantite);
-                printf("    Prix : %.2f\n", tmp->prix);
-                tmp = tmp->suivant;
-            }
-        }
+            total_prix = 0;
+            product *actuel = debut->produits;
+            while (actuel != NULL) {
+                printf("  Produit : %s\n", actuel->nom_produit);
+                printf("    Cat%cgorie : %s\n", 130, actuel->nom_categorie);
+                printf("    Marque : %s\n", actuel->nom_marque);
+                printf("    Rayon : %s\n", actuel->nom_rayon);
+                printf("    Quantit%c : %d\n", 130, actuel->quantite);
+                printf("    Prix : %.2f euro \n", actuel->prix);
 
+                total_prix += actuel->prix * (float)(actuel->quantite);
+                actuel = actuel->suivant;
+            }
+            printf("Montant total : %.2f euro\n", total_prix);
+        }
         debut = debut->suivant;
     }
 }

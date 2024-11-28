@@ -24,34 +24,24 @@ int main() {
     float prixProduit;
 
     do {
-        input = afficherMenu();
+        input = afficherMenuPrincipal();
 
         switch (input) {
             case 1: {
                 printf("\nNom du magasin > ");
                 scanf("%s", nomMagasin);
 
-                // Rechercher ou cr�er le magasin
+                // Rechercher ou créer le magasin
                 store *magasin = rechercherMagasin(listeMagasins, nomMagasin);
+
                 if (magasin == NULL) {
                     magasin = creerMagasin(nomMagasin);
                     magasin->suivant = listeMagasins;
                     listeMagasins = magasin;
                 }
 
-                // Saisir les d�tails du produit
-                printf("Nom du produit > ");
-                scanf("%s", nomProduit);
-                printf("Nom de la cat%cgorie > ", 130);
-                scanf("%s", nomCategorie);
-                printf("Nom de la marque > ");
-                scanf("%s", nomMarque);
-                printf("Nom du rayon > ");
-                scanf("%s", nomRayon);
-                printf("Quantit%c > ", 130);
-                scanf("%d", &quantiteProduit);
-                printf("Prix > ");
-                scanf("%f", &prixProduit);
+                //  Affichage du menu supprimer et recupération des données en passage par adresse
+                afficherMenuAjouter(nomProduit, nomCategorie, nomMarque, nomRayon, &quantiteProduit, &prixProduit);
 
                 // Ajouter le produit au magasin
                 ajouterProduit(magasin, nomProduit, nomCategorie, nomMarque, nomRayon, quantiteProduit, prixProduit);
@@ -67,22 +57,24 @@ int main() {
                     break;
                 }
 
-                printf("Nom du produit > ");
-                scanf("%s", nomProduit);
-                printf("Nom de la marque > ");
-                scanf("%s", nomMarque);
+                //  Affichage du menu supprimer et recupération des données en passage par adresse
+                afficherMenuSupprimer(nomProduit, nomMarque);
 
                 supprimerProduit(magasin, nomProduit, nomMarque);
                 break;
             }
             case 3:
+                break;
+            case 4:
                 afficherMagasinsEtProduits(listeMagasins);
+                break;
+            case 5:
+                break;
+            case 6:
                 break;
             case 10:
                 printf("\nFermeture du programme...\n");
                 break;
-            default:
-                printf("Erreur - Veuillez s%clectionner une option valide.\n", 130);
         }
     } while (input != 10);
 
