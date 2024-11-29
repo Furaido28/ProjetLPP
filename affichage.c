@@ -10,7 +10,7 @@
 int afficherMenuPrincipal() {
     int input;
     do {
-        printf("\nFaites un choix\n");
+        printf("Faites un choix\n");
         printf("1. Ajouter un produit\n");
         printf("2. Supprimer un produit\n");
         printf("3. Rechercher un produit\n");
