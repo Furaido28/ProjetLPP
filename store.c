@@ -1,14 +1,16 @@
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "store.h"
+#include "affichage.h"
 
 // ----------------------------
 // Fonctions pour les magasins
 // ----------------------------
 
-// Fonction pour cr�er un nouveau magasin
+// Fonction pour créer un nouveau magasin
 store *creerMagasin(char *nom_magasin) {
     store *nouveau = (store *)malloc(sizeof(store));
     //memset(nouveau, 0, sizeof(store));  // Réinitialiser toute la structure à zéro
@@ -56,7 +58,6 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
         }
         tmp->suivant = nouveau;
     }
-    printf("\nProduit '%s' ajout%c au magasin '%s' avec succ%cs.\n\n", nom_produit, 130, magasin->nom_magasin, 138);
 }
 
 // --------------------------
@@ -98,41 +99,16 @@ void supprimerProduit(store *magasin, char *nom_produit, char *nom_marque) {
     printf("\033[1;36m----------------------------------\033[0m\n");
 }
 
-// ----------------------
-// Affichage des données
-// ----------------------
-void afficherMagasinsEtProduits(store *debut) {
-    float total_prix, tmp;
-
-    if (debut == NULL) {
-        printf("\nAucun magasin trouv%c.\n\n", 130);  // Utilisation de %c 130 pour "é"
-        return;
-    }
-
-    while (debut != NULL) {
-        printf("\nMagasin : %s\n", debut->nom_magasin);
-        printf("---------------------------\n");
-
-        if (debut->produits == NULL) {
-            printf("  Aucun produit disponible.\n");
-        } else {
-            total_prix = 0;
-            product *actuel = debut->produits;
-            while (actuel != NULL) {
-                printf("  Produit : %s\n", actuel->nom_produit);
-                printf("    Cat%cgorie : %s\n", 130, actuel->nom_categorie);  // Utilisation de %c 130 pour "é"
-                printf("    Marque : %s\n", actuel->nom_marque);
-                printf("    Rayon : %s\n", actuel->nom_rayon);
-                printf("    Quantit%c : %d\n", 130, actuel->quantite);  // Utilisation de %c 130 pour "é"
-                printf("    Prix/u : %.2f euro\n", actuel->prix);
-
-                tmp = actuel->prix * (float)(actuel->quantite);
-                printf("    Prix total : %.2f euro\n", tmp);
-
-                total_prix += tmp;
-                actuel = actuel->suivant;
+// --------------------------
+// Fonction supprimer produit
+// --------------------------
+void rechercherProduit(store *debut, char nom_produit[], char nom_marque[]) {
+    while(debut != NULL) {
+        while(debut->produits != NULL) {
+            if(strcmp(debut->produits->nom_produit, nom_produit) == 0) {
+                printf("trouv%c\n", 130);
             }
-            printf("Montant total : %.2f euro\n\n", total_prix);
+            debut->produits = debut->produits->suivant;
         }
         debut = debut->suivant;
     }
@@ -175,7 +151,10 @@ void archiverListe(store *listeMagasins) {
     }
 
     fclose(fichier);
-    printf("\033[1;32mListe archivée avec succès dans 'archive.txt'.\033[0m\n");
+    printf("\033[1;32mListe archivée avec succès.\033[0m\n");
+    Sleep(200);
+    printf("Appuyez sur Entr%ce pour revenir au menu principal...", 130);
+    getchar(); getchar();
 }
 
 // --------------------------------
@@ -248,5 +227,49 @@ void importerListe(store **listeMagasins) {
     }
 
     fclose(fichier);
+
+    clearScreen();
     printf("\033[1;32mListe import%ce avec succ%cs depuis 'archive.txt'.\033[0m\n", 130, 138);
+    printf("Appuyez sur Entr%ce pour confirmer et revenir au menu principal...", 130);
+    getchar(); getchar();
+}
+
+// ----------------------
+// Affichage des données
+// ----------------------
+void afficherMagasinsEtProduits(store *debut) {
+    float total_prix, tmp;
+
+    if (debut == NULL) {
+        printf("\nAucun magasin trouv%c.\n\n", 130);  // Utilisation de %c 130 pour "é"
+        return;
+    }
+
+    while (debut != NULL) {
+        printf("\nMagasin : %s\n", debut->nom_magasin);
+        printf("---------------------------\n");
+
+        if (debut->produits == NULL) {
+            printf("  Aucun produit disponible.\n");
+        } else {
+            total_prix = 0;
+            product *actuel = debut->produits;
+            while (actuel != NULL) {
+                printf("  Produit : %s\n", actuel->nom_produit);
+                printf("    Cat%cgorie : %s\n", 130, actuel->nom_categorie);  // Utilisation de %c 130 pour "é"
+                printf("    Marque : %s\n", actuel->nom_marque);
+                printf("    Rayon : %s\n", actuel->nom_rayon);
+                printf("    Quantit%c : %d\n", 130, actuel->quantite);  // Utilisation de %c 130 pour "é"
+                printf("    Prix/u : %.2f euro\n", actuel->prix);
+
+                tmp = actuel->prix * (float)(actuel->quantite);
+                printf("    Prix total : %.2f euro\n", tmp);
+
+                total_prix += tmp;
+                actuel = actuel->suivant;
+            }
+            printf("Montant total : %.2f euro\n\n", total_prix);
+        }
+        debut = debut->suivant;
+    }
 }

@@ -5,9 +5,11 @@
 //  **********************************
 
 //  Library public
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 //  Library privé
 #include "store.h"
@@ -18,7 +20,7 @@
 // -------------
 int main() {
     store *listeMagasins = NULL;
-    char nomMagasin[100], nomProduit[80], nomCategorie[80], nomMarque[80], nomRayon[80];
+    char nomMagasin[100], nomProduit[80], nomCategorie[80], nomMarque[80], nomRayon[80], confirmation;
     int quantiteProduit, input;
     float prixProduit;
 
@@ -27,6 +29,10 @@ int main() {
 
         switch (input) {
             case 1: {
+                printf("============================================\n");
+                printf("        \033[1;36m*** Ajouter un Produit ***\033[0m\n");
+                printf("============================================\n\n");
+
                 printf("\n\033[1;33mNom du magasin\033[0m > ");
                 scanf("%99s", nomMagasin);
 
@@ -37,9 +43,6 @@ int main() {
                     magasin = creerMagasin(nomMagasin);
                     magasin->suivant = listeMagasins;
                     listeMagasins = magasin;
-                    printf("\033[1;32mMagasin '%s' cr%c%c avec succ%cs.\033[0m\n", nomMagasin, 130, 130, 138);
-                } else {
-                    printf("\033[1;36mMagasin '%s' trouv%c.\033[0m\n", nomMagasin, 130);
                 }
 
                 // Affichage du menu ajouter
@@ -51,6 +54,10 @@ int main() {
                 break;
             }
             case 2: {
+                printf("============================================\n");
+                printf("        \033[1;36m*** Supprimer un Produit ***\033[0m\n");
+                printf("============================================\n\n");
+
                 printf("\n\033[1;33mNom du magasin\033[0m > ");
                 scanf("%99s", nomMagasin);
 
@@ -62,14 +69,17 @@ int main() {
 
                 // Affichage du menu supprimer
                 afficherMenuSupprimer(nomProduit, nomMarque);
-
+                // Appel la fonction de suppression de produit
                 supprimerProduit(magasin, nomProduit, nomMarque);
                 break;
             }
             case 3:
+                // Affichage du menu rechercher
+                afficherMenuRechercher(nomProduit, nomMagasin);
+                // Appel la fonction de recherche d'un produit
+                rechercherProduit(listeMagasins, nomProduit, nomProduit);
                 break;
             case 4:
-                printf("\n\033[1;36mListe des magasins et produits :\033[0m\n");
                 afficherMagasinsEtProduits(listeMagasins);
                 break;
             case 5:
@@ -78,14 +88,20 @@ int main() {
             case 6:
                 importerListe(&listeMagasins);
                 break;
-            case 7:
-                //supprimerArchive();
-                break;
-            case 10:
-                printf("\n\033[1;35mFermeture du programme...\033[0m\n");
-                break;
+            case 0: {
+                confirmation = confirmer();
+                switch (confirmation) {
+                    case 'Y':
+                        break;
+                    case 'N':
+                        input = -1;
+                        Sleep(550);
+                }
+            }
         }
-    } while (input != 10);
+    } while (input != 0);
 
+    printf("\033[1;35mFermeture du programme...\033[0m\n");
+    Sleep(1000);
     return 0;
 }
