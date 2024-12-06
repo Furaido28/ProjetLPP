@@ -11,6 +11,7 @@
 // Fonction pour cr�er un nouveau magasin
 store *creerMagasin(char *nom_magasin) {
     store *nouveau = (store *)malloc(sizeof(store));
+    //memset(nouveau, 0, sizeof(store));  // Réinitialiser toute la structure à zéro
     strcpy(nouveau->nom_magasin, nom_magasin);
     nouveau->produits = NULL; // Liste de produits vide
     nouveau->suivant = NULL;
@@ -33,6 +34,7 @@ store *rechercherMagasin(store *head, char *nom_magasin) {
 // ------------------------
 void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char *nom_marque, char *nom_rayon, int quantite, float prix) {
     product *nouveau = (product *)malloc(sizeof(product));
+    memset(nouveau, 0, sizeof(product));  // Réinitialiser toute la structure à zéro
 
     // Initialiser les valeurs du nouveau produit
     strcpy(nouveau->nom_produit, nom_produit);
@@ -44,7 +46,7 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
     nouveau->prix = prix;
     nouveau->suivant = NULL;
 
-    // Ajouter le produit � la liste du magasin
+    // Ajouter le produit à la liste du magasin
     if (magasin->produits == NULL) {
         magasin->produits = nouveau;
     } else {
@@ -54,51 +56,56 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
         }
         tmp->suivant = nouveau;
     }
-    printf("\nProduit '%s' ajout%c au magasin '%s' avec succ%cs.\n", nom_produit, 130, magasin->nom_magasin, 130);
+    printf("\nProduit '%s' ajout%c au magasin '%s' avec succ%cs.\n\n", nom_produit, 130, magasin->nom_magasin, 138);
 }
 
 // --------------------------
 // Fonction supprimer produit
 // --------------------------
-
-// Fonction pour supprimer un produit
 void supprimerProduit(store *magasin, char *nom_produit, char *nom_marque) {
     if (magasin == NULL || magasin->produits == NULL) {
-        printf("\nLe magasin est vide ou inexistant.\n");
+        printf("\n\033[1;31m[ERREUR] Le magasin est vide ou inexistant.\033[0m\n");
         return;
     }
 
     product *actuel = magasin->produits;
     product *precedent = NULL;
 
+    printf("\n\033[1;36m----- Suppression du Produit -----\033[0m\n");
+    printf("Produit à supprimer : \033[1;32m'%s' (Marque : %s)\033[0m\n", nom_produit, nom_marque);
+    printf("----------------------------------\n");
+
     while (actuel != NULL) {
         if (strcmp(actuel->nom_produit, nom_produit) == 0 && strcmp(actuel->nom_marque, nom_marque) == 0) {
             if (precedent == NULL) {
-                // Le produit � supprimer est le premier de la liste
+                // Le produit à supprimer est le premier de la liste
                 magasin->produits = actuel->suivant;
             } else {
                 // Supprimer le produit du milieu ou de la fin
                 precedent->suivant = actuel->suivant;
             }
+
             free(actuel);
-            printf("\nProduit '%s' (Marque : %s) supprim%c avec succ%cs.\n", nom_produit, nom_marque, 130, 130);
+            printf("\033[1;31mProduit '%s' de la marque '%s' supprim%c avec succ%cs.\033[0m\n", nom_produit, nom_marque, 130, 138);
+            printf("\033[1;36m----------------------------------\033[0m\n");
             return;
         }
         precedent = actuel;
         actuel = actuel->suivant;
     }
-    printf("\nProduit '%s' (Marque : %s) introuvable dans le magasin.\n", nom_produit, nom_marque);
+
+    printf("\n\033[1;31m[ERREUR] Produit '%s' (Marque : %s) introuvable dans le magasin.\033[0m\n", nom_produit, nom_marque);
+    printf("\033[1;36m----------------------------------\033[0m\n");
 }
 
 // ----------------------
-// Affichage des donn�es
+// Affichage des données
 // ----------------------
-
-// Fonction pour afficher les magasins et leurs produits
 void afficherMagasinsEtProduits(store *debut) {
-    float total_prix;
+    float total_prix, tmp;
+
     if (debut == NULL) {
-        printf("\nAucun magasin trouv%c.\n", 130);
+        printf("\nAucun magasin trouv%c.\n\n", 130);  // Utilisation de %c 130 pour "é"
         return;
     }
 
@@ -113,17 +120,133 @@ void afficherMagasinsEtProduits(store *debut) {
             product *actuel = debut->produits;
             while (actuel != NULL) {
                 printf("  Produit : %s\n", actuel->nom_produit);
-                printf("    Cat%cgorie : %s\n", 130, actuel->nom_categorie);
+                printf("    Cat%cgorie : %s\n", 130, actuel->nom_categorie);  // Utilisation de %c 130 pour "é"
                 printf("    Marque : %s\n", actuel->nom_marque);
                 printf("    Rayon : %s\n", actuel->nom_rayon);
-                printf("    Quantit%c : %d\n", 130, actuel->quantite);
-                printf("    Prix : %.2f euro \n", actuel->prix);
+                printf("    Quantit%c : %d\n", 130, actuel->quantite);  // Utilisation de %c 130 pour "é"
+                printf("    Prix/u : %.2f euro\n", actuel->prix);
 
-                total_prix += actuel->prix * (float)(actuel->quantite);
+                tmp = actuel->prix * (float)(actuel->quantite);
+                printf("    Prix total : %.2f euro\n", tmp);
+
+                total_prix += tmp;
                 actuel = actuel->suivant;
             }
-            printf("Montant total : %.2f euro\n", total_prix);
+            printf("Montant total : %.2f euro\n\n", total_prix);
         }
         debut = debut->suivant;
     }
+}
+
+// ---------------------------------
+// Fonction pour archiver une liste
+// ---------------------------------
+void archiverListe(store *listeMagasins) {
+    FILE *fichier = fopen("archive.txt", "w");  // Utilisation de "w" pour écraser l'ancien fichier
+    if (fichier == NULL) {
+        printf("\033[1;31mErreur d'ouverture du fichier d'archive.\033[0m\n");
+        return;
+    }
+
+    store *magasin = listeMagasins;
+    while (magasin != NULL) {
+        // Afficher le nom du magasin
+        fprintf(fichier, "%s\n", magasin->nom_magasin);
+
+        if (magasin->produits == NULL) {
+            // Si aucun produit n'est disponible, afficher ce message
+            fprintf(fichier, "  Aucun produit disponible.\n");
+        } else {
+            // Sinon, afficher les produits disponibles
+            product *produit = magasin->produits;
+            while (produit != NULL) {
+                // Afficher les informations du produit avec une indentation
+                fprintf(fichier, "	%s\n", produit->nom_produit);  // Nom du produit
+                fprintf(fichier, "		%s\n", produit->nom_categorie);  // Catégorie
+                fprintf(fichier, "		%s\n", produit->nom_marque);  // Marque
+                fprintf(fichier, "		%s\n", produit->nom_rayon);  // Rayon
+                fprintf(fichier, "		%d\n", produit->quantite);  // Quantité
+                fprintf(fichier, "		%.2f\n", produit->prix);  // Prix unitaire
+                produit = produit->suivant;
+            }
+        }
+
+        magasin = magasin->suivant;
+    }
+
+    fclose(fichier);
+    printf("\033[1;32mListe archivée avec succès dans 'archive.txt'.\033[0m\n");
+}
+
+// --------------------------------
+// Fonction pour importer une liste
+// --------------------------------
+void importerListe(store **listeMagasins) {
+    FILE *fichier = fopen("archive.txt", "r");
+    if (fichier == NULL) {
+        printf("\033[1;31mErreur d'ouverture du fichier d'archive.\033[0m\n");
+        return;
+    }
+
+    char ligne[256], nomMagasin[100], nomProduit[80], nomCategorie[80], nomMarque[80], nomRayon[80];
+    int quantiteProduit;
+    float prixProduit;
+
+    store *magasinActuel = NULL;
+    product *produitActuel = NULL;
+
+    // Lecture ligne par ligne
+    while (fgets(ligne, sizeof(ligne), fichier)) {
+        // Retirer le saut de ligne à la fin
+        ligne[strcspn(ligne, "\n")] = 0;
+
+        if (strlen(ligne) == 0) {
+            continue;  // Sauter les lignes vides
+        }
+
+        // Si la ligne contient le nom du magasin
+        if (ligne[0] != '\t') {
+            // Si un magasin est déjà ouvert, l'ajouter à la liste
+            if (magasinActuel != NULL) {
+                magasinActuel->suivant = *listeMagasins;
+                *listeMagasins = magasinActuel;
+            }
+
+            // Créer un nouveau magasin
+            strcpy(nomMagasin, ligne);
+            magasinActuel = creerMagasin(nomMagasin);
+            magasinActuel->produits = NULL;  // Initialiser la liste des produits à NULL
+            continue;
+        }
+
+        // Si la ligne commence par une tabulation, c'est un produit à ajouter
+        sscanf(ligne, "%s", nomProduit);  // Lire le nom du produit
+
+        fgets(ligne, sizeof(ligne), fichier);  // Lire la catégorie
+        sscanf(ligne, "%s", nomCategorie);
+
+        fgets(ligne, sizeof(ligne), fichier);  // Lire la marque
+        sscanf(ligne, "%s", nomMarque);
+
+        fgets(ligne, sizeof(ligne), fichier);  // Lire le rayon
+        sscanf(ligne, "%s", nomRayon);
+
+        fgets(ligne, sizeof(ligne), fichier);  // Lire la quantité
+        sscanf(ligne, "%d", &quantiteProduit);
+
+        fgets(ligne, sizeof(ligne), fichier);  // Lire le prix
+        sscanf(ligne, "%f", &prixProduit);
+
+        // Ajouter le produit au magasin
+        ajouterProduit(magasinActuel, nomProduit, nomCategorie, nomMarque, nomRayon, quantiteProduit, prixProduit);
+    }
+
+    // Ajouter le dernier magasin à la liste
+    if (magasinActuel != NULL) {
+        magasinActuel->suivant = *listeMagasins;
+        *listeMagasins = magasinActuel;
+    }
+
+    fclose(fichier);
+    printf("\033[1;32mListe import%ce avec succ%cs depuis 'archive.txt'.\033[0m\n", 130, 138);
 }

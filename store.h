@@ -30,4 +30,7 @@
   void ajouterProduit(store*, char*, char*, char*, char*, int, float);
   void supprimerProduit(store*, char*, char*);
   void afficherMagasinsEtProduits(store*);
+  void archiverListe(store *listeMagasins);
+  void importerListe(store **listeMagasins);
+  //void supprimerArchive();
 #endif // STORE_H

@@ -16,7 +16,6 @@
 // -------------
 // Fonction main
 // -------------
-
 int main() {
     store *listeMagasins = NULL;
     char nomMagasin[100], nomProduit[80], nomCategorie[80], nomMarque[80], nomRayon[80];
@@ -28,8 +27,8 @@ int main() {
 
         switch (input) {
             case 1: {
-                printf("\nNom du magasin > ");
-                scanf("%s", nomMagasin);
+                printf("\n\033[1;33mNom du magasin\033[0m > ");
+                scanf("%99s", nomMagasin);
 
                 // Rechercher ou créer le magasin
                 store *magasin = rechercherMagasin(listeMagasins, nomMagasin);
@@ -38,26 +37,30 @@ int main() {
                     magasin = creerMagasin(nomMagasin);
                     magasin->suivant = listeMagasins;
                     listeMagasins = magasin;
+                    printf("\033[1;32mMagasin '%s' cr%c%c avec succ%cs.\033[0m\n", nomMagasin, 130, 130, 138);
+                } else {
+                    printf("\033[1;36mMagasin '%s' trouv%c.\033[0m\n", nomMagasin, 130);
                 }
 
-                //  Affichage du menu supprimer et recupération des données en passage par adresse
+                // Affichage du menu ajouter
                 afficherMenuAjouter(nomProduit, nomCategorie, nomMarque, nomRayon, &quantiteProduit, &prixProduit);
 
                 // Ajouter le produit au magasin
                 ajouterProduit(magasin, nomProduit, nomCategorie, nomMarque, nomRayon, quantiteProduit, prixProduit);
+                printf("\033[1;32mProduit '%s' ajout%c avec succ%cs au magasin '%s'.\033[0m\n", nomProduit, 130, 138, nomMagasin);
                 break;
             }
             case 2: {
-                printf("\nNom du magasin > ");
-                scanf("%s", nomMagasin);
+                printf("\n\033[1;33mNom du magasin\033[0m > ");
+                scanf("%99s", nomMagasin);
 
                 store *magasin = rechercherMagasin(listeMagasins, nomMagasin);
                 if (magasin == NULL) {
-                    printf("\nMagasin introuvable.\n");
+                    printf("\033[1;31mMagasin introuvable.\033[0m\n");
                     break;
                 }
 
-                //  Affichage du menu supprimer et recupération des données en passage par adresse
+                // Affichage du menu supprimer
                 afficherMenuSupprimer(nomProduit, nomMarque);
 
                 supprimerProduit(magasin, nomProduit, nomMarque);
@@ -66,14 +69,20 @@ int main() {
             case 3:
                 break;
             case 4:
+                printf("\n\033[1;36mListe des magasins et produits :\033[0m\n");
                 afficherMagasinsEtProduits(listeMagasins);
                 break;
             case 5:
+                archiverListe(listeMagasins);
                 break;
             case 6:
+                importerListe(&listeMagasins);
+                break;
+            case 7:
+                //supprimerArchive();
                 break;
             case 10:
-                printf("\nFermeture du programme...\n");
+                printf("\n\033[1;35mFermeture du programme...\033[0m\n");
                 break;
         }
     } while (input != 10);
