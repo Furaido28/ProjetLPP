@@ -1,9 +1,14 @@
 #ifndef STORE_H
   #define STORE_H
+    // Library public
+    #include <windows.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <ctype.h>
+    #include <string.h>
 
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <string.h>
+    // Library privé
+    #include "affichage.h"
 
   // --------------------------
   // Déclaration des structures
@@ -28,6 +33,7 @@
   store* creerMagasin(char*);
   store* rechercherMagasin(store*, char*);
   void ajouterProduit(store*, char*, char*, char*, char*, int, float);
+  void modifierProduit(store*, char*, char*, char*, char*, char*, char*, int, float);
   void supprimerProduit(store*, char*, char*);
   void rechercherProduit(store*, char[], char[]);
   void afficherMagasinsEtProduits(store*);

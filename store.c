@@ -1,10 +1,5 @@
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
+// Library privé
 #include "store.h"
-#include "affichage.h"
 
 // ----------------------------
 // Fonctions pour les magasins
@@ -35,7 +30,7 @@ store *rechercherMagasin(store *head, char *nom_magasin) {
 // ------------------------
 void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char *nom_marque, char *nom_rayon, int quantite, float prix) {
     product *nouveau = (product *)malloc(sizeof(product));
-    memset(nouveau, 0, sizeof(product));  // Réinitialiser toute la structure à zéro
+    memset(nouveau, 0, sizeof(product));
 
     // Initialiser les valeurs du nouveau produit
     strcpy(nouveau->nom_produit, nom_produit);
@@ -57,6 +52,37 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
         }
         tmp->suivant = nouveau;
     }
+}
+
+// -------------------------
+// Fonction modifier produit
+// -------------------------
+void modifierProduit(store *magasin, char *old_nom_produit, char *old_nom_marque, char *new_nom_produit, char *new_nom_categorie, char *new_nom_marque, char *new_nom_rayon, int new_quantite, float new_prix) {
+    int tmp = 0;
+
+    product *actuel = magasin->produits;
+    while(actuel != NULL) {
+        if(strcmp(actuel->nom_produit, old_nom_produit) == 0 && strcmp(actuel->nom_marque, old_nom_marque) == 0) {
+            strcpy(actuel->nom_produit, new_nom_produit);
+            strcpy(actuel->nom_categorie, new_nom_categorie);
+            strcpy(actuel->nom_marque, new_nom_marque);
+            strcpy(actuel->nom_rayon, new_nom_rayon);
+            actuel->quantite = new_quantite;
+            actuel->prix = new_prix;
+            tmp++;
+            break;
+        }
+        actuel = actuel->suivant;
+    }
+
+    if(tmp == 0) {
+        printf("\n\033[1;31mProduit '%s' (Marque : %s) introuvable dans le magasin.\033[0m\n", old_nom_produit, old_nom_marque);
+    } else {
+        printf("\033[1;32mProduit '%s' modifi%c avec succ%cs.\033[0m\n", new_nom_produit, 130, 138, new_nom_marque);
+    }
+
+    printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+    getchar(); getchar();
 }
 
 // --------------------------

@@ -1,9 +1,4 @@
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
-
+// Library privé
 #include "affichage.h"
 
 // -----------------
@@ -18,23 +13,24 @@ int afficherMenuPrincipal() {
         printf("==============================================\n\n");
         printf("\033[1;33mFaites un choix :\033[0m\n");
         printf("  \033[1;32m1.\033[0m Ajouter un produit\n");
-        printf("  \033[1;32m2.\033[0m Supprimer un produit\n");
-        printf("  \033[1;32m3.\033[0m Rechercher un produit\n");
-        printf("  \033[1;32m4.\033[0m Afficher la liste des produits\n");
-        printf("  \033[1;32m5.\033[0m Archiver la liste des produits\n");
-        printf("  \033[1;32m6.\033[0m Importer une liste de produits\n");
+        printf("  \033[1;32m2.\033[0m Modifier un produit\n");
+        printf("  \033[1;32m3.\033[0m Supprimer un produit\n");
+        printf("  \033[1;32m4.\033[0m Rechercher un produit\n");
+        printf("  \033[1;32m5.\033[0m Afficher la liste des produits\n");
+        printf("  \033[1;32m6.\033[0m Archiver la liste des produits\n");
+        printf("  \033[1;32m7.\033[0m Importer une liste de produits\n");
         printf("  \033[1;34m------\033[0m\n");
         printf("  \033[1;31m0.\033[0m Fermer le programme\n");
         printf("\n");
 
         printf("> ");
         scanf("%d", &input);
-        if (input != 0 && (input < 1 || input > 6)) {
+        if (input != 0 && (input < 1 || input > 7)) {
             printf("Erreur - Veuillez s%clectionner une option valide.\n\n", 130);
             printf("Appuyez sur Entr%ce pour continuer...", 130);
             getchar(); getchar();
         }
-    } while (input != 0 && (input < 1 || input > 6));
+    } while (input != 0 && (input < 1 || input > 7));
     return input;
 }
 

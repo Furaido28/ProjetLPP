@@ -8,8 +8,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
 
 //  Library privé
 #include "store.h"
@@ -55,6 +55,35 @@ int main() {
                 break;
             }
             case 2: {
+                char ancien_nom[80], ancienne_marque[80];
+                clearScreen();
+                printf("============================================\n");
+                printf("        \033[1;36m*** Modifier un Produit ***\033[0m\n");
+                printf("============================================\n\n");
+
+                printf("\033[1;33mNom du magasin\033[0m > ");
+                scanf("%99s", nomMagasin);
+                printf("\033[1;33mNom du produit\033[0m > ");
+                scanf("%99s", ancien_nom);
+                printf("\033[1;33mMarque du produit\033[0m > ");
+                scanf("%99s", ancienne_marque);
+
+                traitement();
+                printf("====================================================\n");
+                printf("        \033[1;36m*** Information du nouveau produit ***\033[0m\n");
+                printf("====================================================\n\n");
+
+                // Rechercher ou créer le magasin
+                store *magasin = rechercherMagasin(listeMagasins, nomMagasin);
+
+                // Affichage du menu ajouter
+                afficherMenuAjouter(nomProduit, nomCategorie, nomMarque, nomRayon, &quantiteProduit, &prixProduit);
+
+                // Modifier le produit
+                modifierProduit(magasin, ancien_nom, ancienne_marque, nomProduit, nomCategorie, nomMarque, nomRayon, quantiteProduit, prixProduit);
+                break;
+            }
+            case 3: {
                 clearScreen();
                 printf("============================================\n");
                 printf("        \033[1;36m*** Supprimer un Produit ***\033[0m\n");
@@ -75,19 +104,19 @@ int main() {
                 supprimerProduit(magasin, nomProduit, nomMarque);
                 break;
             }
-            case 3:
+            case 4:
                 // Affichage du menu rechercher
                 afficherMenuRechercher(nomProduit, nomMarque);
                 // Appel la fonction de recherche d'un produit
                 rechercherProduit(listeMagasins, nomProduit, nomMarque);
                 break;
-            case 4:
+            case 5:
                 afficherMagasinsEtProduits(listeMagasins);
                 break;
-            case 5:
+            case 6:
                 archiverListe(listeMagasins);
                 break;
-            case 6:
+            case 7:
                 importerListe(&listeMagasins);
                 break;
             case 0: {
