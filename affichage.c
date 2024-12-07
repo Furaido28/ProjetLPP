@@ -12,6 +12,10 @@
 int afficherMenuPrincipal() {
     int input;
     do {
+        clearScreen();
+        printf("==============================================\n");
+        printf("            \033[1;32m*** Menu Principal ***\033[0m\n");
+        printf("==============================================\n\n");
         printf("\033[1;33mFaites un choix :\033[0m\n");
         printf("  \033[1;32m1.\033[0m Ajouter un produit\n");
         printf("  \033[1;32m2.\033[0m Supprimer un produit\n");
@@ -29,10 +33,8 @@ int afficherMenuPrincipal() {
             printf("Erreur - Veuillez s%clectionner une option valide.\n\n", 130);
             printf("Appuyez sur Entr%ce pour continuer...", 130);
             getchar(); getchar();
-            clearScreen();
         }
     } while (input != 0 && (input < 1 || input > 6));
-    clearScreen();
     return input;
 }
 
@@ -55,62 +57,68 @@ void afficherMenuAjouter(char *nomProduit, char *nomCategorie, char *nomMarque, 
     printf("\033[1;32mPrix\033[0m > ");
     scanf("%f", prixProduit);
 
-    printf("Appuyez sur Entr%ce pour revenir au menu principal...", 130);
-    getchar(); getchar();
-    clearScreen();
+    traitement();
 }
 
 void afficherMenuSupprimer(char *nomProduit, char *nomMarque) {
-
-    printf("============================================\n");
-    printf("        \033[1;31m*** Supprimer un Produit ***\033[0m\n");
-    printf("============================================\n\n");
-
-    printf("\033[1;33mVeuillez entrer les informations suivantes pour supprimer un produit :\033[0m\n\n");
-
     printf("\033[1;32mNom du produit\033[0m > ");
     scanf("%s", nomProduit);
 
     printf("\033[1;32mNom de la marque\033[0m > ");
     scanf("%s", nomMarque);
 
-    printf("Appuyez sur Entr%ce pour confirmer et revenir au menu principal...", 130);
-    getchar(); getchar();
-    clearScreen();
+    traitement();
 }
 
 void afficherMenuRechercher(char nom_produit[], char nom_marque[]) {
+    clearScreen();
     printf("=============================================\n");
-    printf("        \033[1;31m*** Rechercher un Produit ***\033[0m\n");
+    printf("        \033[1;36m*** Rechercher un Produit ***\033[0m\n");
     printf("=============================================\n\n");
 
     printf("\033[1;32mNom du produit\033[0m > ");
     scanf("%s", nom_produit);
     printf("\033[1;32mNom de la marque\033[0m > ");
     scanf("%s", nom_marque);
-    clearScreen();
+
+    traitement();
 }
 // -------------------------------
 // Fonction pour effacer le terminal
 // -------------------------------
 char confirmer() {
-    char input = 'Y';
+    char input;
     do {
-        printf("\033[1;32mVeuillez confirmer votre choix (Y/N) \033[0m > ");
+        clearScreen();
+        printf("\033[1;32mVeuillez confirmer votre choix (Y/N)\033[0m > ");
         scanf(" %c", &input);
 
         if (input >= 'y' || input <= 'n') {
             input = toupper(input);
         }
     } while (input != 'Y' && input != 'N');
-    clearScreen();
     return input;
 }
+// -----------------------------
+// Fonction affichage traitement
+// -----------------------------
+void traitement() {
+    int i;
+    char tmp[3] = {'.', '.', '.'};
 
-// -------------------------------
+    clearScreen();
+    printf("Traitement en cours ");
+    for(i = 0; i <= 2; i++) {
+        Sleep(575);
+        printf("%c", tmp[i]);
+    }
+    clearScreen();
+}
+
+// ---------------------------------
 // Fonction pour effacer le terminal
-// -------------------------------
+// ---------------------------------
 void clearScreen() {
-    Sleep(550);
+    Sleep(700);
     system("cls");
 }

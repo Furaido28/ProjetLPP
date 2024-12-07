@@ -6,5 +6,6 @@
     int afficherMenuPrincipal();
     void afficherMenuRechercher(char[], char[]);
     char confirmer();
+    void traitement();
     void clearScreen();
 #endif

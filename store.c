@@ -13,7 +13,6 @@
 // Fonction pour créer un nouveau magasin
 store *creerMagasin(char *nom_magasin) {
     store *nouveau = (store *)malloc(sizeof(store));
-    //memset(nouveau, 0, sizeof(store));  // Réinitialiser toute la structure à zéro
     strcpy(nouveau->nom_magasin, nom_magasin);
     nouveau->produits = NULL; // Liste de produits vide
     nouveau->suivant = NULL;
@@ -64,17 +63,9 @@ void ajouterProduit(store *magasin, char *nom_produit, char *nom_categorie, char
 // Fonction supprimer produit
 // --------------------------
 void supprimerProduit(store *magasin, char *nom_produit, char *nom_marque) {
-    if (magasin == NULL || magasin->produits == NULL) {
-        printf("\n\033[1;31m[ERREUR] Le magasin est vide ou inexistant.\033[0m\n");
-        return;
-    }
-
     product *actuel = magasin->produits;
     product *precedent = NULL;
-
-    printf("\n\033[1;36m----- Suppression du Produit -----\033[0m\n");
-    printf("Produit à supprimer : \033[1;32m'%s' (Marque : %s)\033[0m\n", nom_produit, nom_marque);
-    printf("----------------------------------\n");
+    int tmp = 0;
 
     while (actuel != NULL) {
         if (strcmp(actuel->nom_produit, nom_produit) == 0 && strcmp(actuel->nom_marque, nom_marque) == 0) {
@@ -87,40 +78,73 @@ void supprimerProduit(store *magasin, char *nom_produit, char *nom_marque) {
             }
 
             free(actuel);
-            printf("\033[1;31mProduit '%s' de la marque '%s' supprim%c avec succ%cs.\033[0m\n", nom_produit, nom_marque, 130, 138);
-            printf("\033[1;36m----------------------------------\033[0m\n");
-            return;
+            tmp++;
+            break;
         }
         precedent = actuel;
         actuel = actuel->suivant;
     }
 
-    printf("\n\033[1;31m[ERREUR] Produit '%s' (Marque : %s) introuvable dans le magasin.\033[0m\n", nom_produit, nom_marque);
-    printf("\033[1;36m----------------------------------\033[0m\n");
+    clearScreen();
+
+    if(tmp != 0) {
+        printf("\033[1;31mProduit '%s' de la marque '%s' supprim%c avec succ%cs.\033[0m\n", nom_produit, nom_marque, 130, 138);
+    } else {
+        printf("\n\033[1;31mProduit '%s' (Marque : %s) introuvable dans le magasin.\033[0m\n", nom_produit, nom_marque);
+    }
+    printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+    getchar(); getchar();
 }
 
-// --------------------------
-// Fonction supprimer produit
-// --------------------------
+// ---------------------------
+// Fonction rechercher produit
+// ---------------------------
 void rechercherProduit(store *debut, char nom_produit[], char nom_marque[]) {
+    int tmp = 0;
+
+    printf("=============================================\n");
+    printf("        \033[1;36m*** Rechercher un Produit ***\033[0m\n");
+    printf("=============================================\n");
+
     while(debut != NULL) {
-        while(debut->produits != NULL) {
-            if(strcmp(debut->produits->nom_produit, nom_produit) == 0) {
-                printf("trouv%c\n", 130);
+        product *actuel = debut->produits;  // Pointeur temporaire
+        while(actuel != NULL) {
+            if(strcmp(actuel->nom_produit, nom_produit) == 0 && strcmp(actuel->nom_marque, nom_marque) == 0) {
+                printf("\nMagasin : %-s\n", debut->nom_magasin);
+                printf("---------------------------\n");
+                printf("  Produit : %-s\n", actuel->nom_produit);
+                printf("    Cat%cgorie : %-s\n", 130, actuel->nom_categorie);
+                printf("    Marque : %-s\n", actuel->nom_marque);
+                printf("    Rayon : %-s\n", actuel->nom_rayon);
+                printf("    Quantit%c : %d\n", 130, actuel->quantite);
+                printf("    Prix/u : %.2f euro\n", actuel->prix);
+                tmp++;
             }
-            debut->produits = debut->produits->suivant;
+            actuel = actuel->suivant;  // Avancer sans modifier debut->produits
         }
         debut = debut->suivant;
     }
+
+    if(tmp == 0) {
+        printf("\n\033[1;31mProduit '%s' (Marque : %s) introuvable dans le magasin.\033[0m\n", nom_produit, nom_marque);
+    }
+
+    printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+    getchar(); getchar();
 }
 
 // ---------------------------------
 // Fonction pour archiver une liste
 // ---------------------------------
 void archiverListe(store *listeMagasins) {
+    traitement();
+
     FILE *fichier = fopen("archive.txt", "w");  // Utilisation de "w" pour écraser l'ancien fichier
     if (fichier == NULL) {
         printf("\033[1;31mErreur d'ouverture du fichier d'archive.\033[0m\n");
+
+        printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+        getchar(); getchar();
         return;
     }
 
@@ -130,17 +154,17 @@ void archiverListe(store *listeMagasins) {
         fprintf(fichier, "%s\n", magasin->nom_magasin);
 
         if (magasin->produits == NULL) {
-            // Si aucun produit n'est disponible, afficher ce message
-            fprintf(fichier, "  Aucun produit disponible.\n");
+            // Si aucun produit n'est inscrit dans la liste
+            fprintf(fichier, "  Aucun produit dans la liste.\n");
         } else {
             // Sinon, afficher les produits disponibles
             product *produit = magasin->produits;
             while (produit != NULL) {
                 // Afficher les informations du produit avec une indentation
-                fprintf(fichier, "	%s\n", produit->nom_produit);  // Nom du produit
-                fprintf(fichier, "		%s\n", produit->nom_categorie);  // Catégorie
-                fprintf(fichier, "		%s\n", produit->nom_marque);  // Marque
-                fprintf(fichier, "		%s\n", produit->nom_rayon);  // Rayon
+                fprintf(fichier, "	%-s\n", produit->nom_produit);  // Nom du produit
+                fprintf(fichier, "		%-s\n", produit->nom_categorie);  // Catégorie
+                fprintf(fichier, "		%-s\n", produit->nom_marque);  // Marque
+                fprintf(fichier, "		%-s\n", produit->nom_rayon);  // Rayon
                 fprintf(fichier, "		%d\n", produit->quantite);  // Quantité
                 fprintf(fichier, "		%.2f\n", produit->prix);  // Prix unitaire
                 produit = produit->suivant;
@@ -151,9 +175,10 @@ void archiverListe(store *listeMagasins) {
     }
 
     fclose(fichier);
-    printf("\033[1;32mListe archivée avec succès.\033[0m\n");
-    Sleep(200);
-    printf("Appuyez sur Entr%ce pour revenir au menu principal...", 130);
+    printf("\033[1;32mListe archiv%ce avec succ%cs.\033[0m\n", 130, 130);
+    Sleep(800);
+
+    printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
     getchar(); getchar();
 }
 
@@ -161,9 +186,13 @@ void archiverListe(store *listeMagasins) {
 // Fonction pour importer une liste
 // --------------------------------
 void importerListe(store **listeMagasins) {
+    traitement();
     FILE *fichier = fopen("archive.txt", "r");
     if (fichier == NULL) {
         printf("\033[1;31mErreur d'ouverture du fichier d'archive.\033[0m\n");
+
+        printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+        getchar(); getchar();
         return;
     }
 
@@ -228,9 +257,9 @@ void importerListe(store **listeMagasins) {
 
     fclose(fichier);
 
-    clearScreen();
-    printf("\033[1;32mListe import%ce avec succ%cs depuis 'archive.txt'.\033[0m\n", 130, 138);
-    printf("Appuyez sur Entr%ce pour confirmer et revenir au menu principal...", 130);
+    printf("\033[1;32mListe import%ce avec succ%cs.\033[0m\n", 130, 138);
+
+    printf("\nAppuyez sur Entr%ce pour confirmer et revenir au menu principal...", 130);
     getchar(); getchar();
 }
 
@@ -238,13 +267,20 @@ void importerListe(store **listeMagasins) {
 // Affichage des données
 // ----------------------
 void afficherMagasinsEtProduits(store *debut) {
+    traitement();
     float total_prix, tmp;
 
     if (debut == NULL) {
         printf("\nAucun magasin trouv%c.\n\n", 130);  // Utilisation de %c 130 pour "é"
+
+        printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+        getchar(); getchar();
         return;
     }
 
+    printf("==============================================\n");
+    printf("\033[1;36m  *** Liste des magasins et des produits ***\033[0m\n");
+    printf("==============================================\n");
     while (debut != NULL) {
         printf("\nMagasin : %s\n", debut->nom_magasin);
         printf("---------------------------\n");
@@ -272,4 +308,6 @@ void afficherMagasinsEtProduits(store *debut) {
         }
         debut = debut->suivant;
     }
+    printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+    getchar(); getchar();
 }

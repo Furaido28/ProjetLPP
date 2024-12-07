@@ -1,7 +1,7 @@
 //  **********************************
-//  Nom     :   Flipo       Makhloufi
-//  Prénom  :   Ethan       Olivia
-//  Classe  :   2BIA1
+//  Nom       :   Flipo       Makhloufi
+//  Prénom    :   Ethan       Olivia
+//  Classe    :   2BIA1
 //  **********************************
 
 //  Library public
@@ -20,18 +20,16 @@
 // -------------
 int main() {
     store *listeMagasins = NULL;
-    char nomMagasin[100], nomProduit[80], nomCategorie[80], nomMarque[80], nomRayon[80], confirmation;
-    int quantiteProduit, input;
+    char nomMagasin[100], nomProduit[80], nomCategorie[80], nomMarque[80], nomRayon[80];
+    int quantiteProduit;
     float prixProduit;
-
     do {
-        input = afficherMenuPrincipal();
-
-        switch (input) {
+        switch (afficherMenuPrincipal()) {
             case 1: {
+                clearScreen();
                 printf("============================================\n");
                 printf("        \033[1;36m*** Ajouter un Produit ***\033[0m\n");
-                printf("============================================\n\n");
+                printf("============================================\n");
 
                 printf("\n\033[1;33mNom du magasin\033[0m > ");
                 scanf("%99s", nomMagasin);
@@ -51,12 +49,16 @@ int main() {
                 // Ajouter le produit au magasin
                 ajouterProduit(magasin, nomProduit, nomCategorie, nomMarque, nomRayon, quantiteProduit, prixProduit);
                 printf("\033[1;32mProduit '%s' ajout%c avec succ%cs au magasin '%s'.\033[0m\n", nomProduit, 130, 138, nomMagasin);
+
+                printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+                getchar(); getchar();
                 break;
             }
             case 2: {
+                clearScreen();
                 printf("============================================\n");
                 printf("        \033[1;36m*** Supprimer un Produit ***\033[0m\n");
-                printf("============================================\n\n");
+                printf("============================================\n");
 
                 printf("\n\033[1;33mNom du magasin\033[0m > ");
                 scanf("%99s", nomMagasin);
@@ -75,9 +77,9 @@ int main() {
             }
             case 3:
                 // Affichage du menu rechercher
-                afficherMenuRechercher(nomProduit, nomMagasin);
+                afficherMenuRechercher(nomProduit, nomMarque);
                 // Appel la fonction de recherche d'un produit
-                rechercherProduit(listeMagasins, nomProduit, nomProduit);
+                rechercherProduit(listeMagasins, nomProduit, nomMarque);
                 break;
             case 4:
                 afficherMagasinsEtProduits(listeMagasins);
@@ -89,19 +91,17 @@ int main() {
                 importerListe(&listeMagasins);
                 break;
             case 0: {
-                confirmation = confirmer();
-                switch (confirmation) {
+                switch (confirmer()) {
                     case 'Y':
-                        break;
+                        traitement();
+                        printf("\033[1;35mFermeture du programme...\033[0m\n");
+                        Sleep(800);
+                        return 0;
                     case 'N':
-                        input = -1;
-                        Sleep(550);
+                        break;
                 }
             }
         }
-    } while (input != 0);
-
-    printf("\033[1;35mFermeture du programme...\033[0m\n");
-    Sleep(1000);
+    } while (1);
     return 0;
 }
