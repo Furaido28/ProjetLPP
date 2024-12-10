@@ -8,10 +8,11 @@ int afficherMenuPrincipal() {
     int input;
     do {
         clearScreen();
-        printf("==============================================\n");
-        printf("            \033[1;32m*** Menu Principal ***\033[0m\n");
-        printf("==============================================\n\n");
-        printf("\033[1;33mFaites un choix :\033[0m\n");
+        printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+        printf(">>          \033[1;36mMenu Principal\033[0m          <<\n");
+        printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
+
+        printf("\033[1;33mVeuillez choisir une option :\033[0m\n");
         printf("  \033[1;32m1.\033[0m Ajouter un produit\n");
         printf("  \033[1;32m2.\033[0m Modifier un produit\n");
         printf("  \033[1;32m3.\033[0m Supprimer un produit\n");
@@ -56,6 +57,7 @@ void afficherMenuAjouter(char *nomProduit, char *nomCategorie, char *nomMarque, 
     traitement();
 }
 
+
 void afficherMenuSupprimer(char *nomProduit, char *nomMarque) {
     printf("\033[1;32mNom du produit\033[0m > ");
     scanf("%s", nomProduit);
@@ -66,12 +68,39 @@ void afficherMenuSupprimer(char *nomProduit, char *nomMarque) {
     traitement();
 }
 
+// ---------------------------------------
+// Fonction pour les différents affichages
+// ---------------------------------------
+int afficherMenuAffichage() {
+    int input;
+    do {
+        clearScreen();
+        printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+        printf(">>   \033[1;36mMenu Affichage des produits\033[0m   <<\n");
+        printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
+        printf("\033[1;33mVeuillez choisir une option :\033[0m\n");
+        printf("  \033[1;32m1.\033[0m Afficher les produits d'un magasin\n");
+        printf("  \033[1;32m2.\033[0m Afficher tous les produits\n");
+        printf("  \033[1;34m------\033[0m\n");
+        printf("  \033[1;31m0.\033[0m Fermer le programme\n");
+        printf("\n");
+
+        printf("> ");
+        scanf("%d", &input);
+        if (input != 0 && (input < 1 || input > 2)) {
+            printf("Erreur - Veuillez s%clectionner une option valide.\n\n", 130);
+            printf("Appuyez sur Entr%ce pour continuer...", 130);
+            getchar(); getchar();
+        }
+    } while (input != 0 && (input < 1 || input > 3));
+    return input;
+}
+
 void afficherMenuRechercher(char nom_produit[], char nom_marque[]) {
     clearScreen();
-    printf("=============================================\n");
-    printf("        \033[1;36m*** Rechercher un Produit ***\033[0m\n");
-    printf("=============================================\n\n");
-
+    printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    printf(">>      \033[1;36mRechercher un Produit\033[0m      <<\n");
+    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
     printf("\033[1;32mNom du produit\033[0m > ");
     scanf("%s", nom_produit);
     printf("\033[1;32mNom de la marque\033[0m > ");

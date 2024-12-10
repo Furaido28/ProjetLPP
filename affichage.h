@@ -7,10 +7,14 @@
     #include <ctype.h>
     #include <string.h>
 
+    // Library privé
+    #include "store.h"
+
     // Prototypes des fonctions
+    int afficherMenuPrincipal();
     void afficherMenuAjouter(char*, char*, char*, char*, int*, float*);
     void afficherMenuSupprimer(char*, char*);
-    int afficherMenuPrincipal();
+    int afficherMenuAffichage();
     void afficherMenuRechercher(char[], char[]);
     char confirmer();
     void traitement();

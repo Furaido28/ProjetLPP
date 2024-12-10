@@ -25,6 +25,42 @@ store *rechercherMagasin(store *head, char *nom_magasin) {
     return NULL;
 }
 
+// Fonction pour rechercher un produit dans un magasin
+int rechercherProduitMagasin(store *liste, char *nom_magasin, char *nom_produit, char *nom_marque) {
+    store *magasin = rechercherMagasin(liste, nom_magasin);
+
+    if (magasin == NULL) {  // Vérification avant d'accéder à magasin->produits
+        traitement();
+        printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+        printf(">>         \033[1;36mModifier un Produit\033[0m         <<\n");
+        printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
+
+        printf("\033[1;31mMagasin '%s' introuvable.\033[0m\n", nom_magasin);
+
+        printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+        getchar(); getchar();
+        return 0;
+    }
+
+    product *actuel = magasin->produits;
+
+    while (actuel != NULL) {
+        if (strcmp(actuel->nom_produit, nom_produit) == 0 && strcmp(actuel->nom_marque, nom_marque) == 0) {
+            return 1;
+        }
+        actuel = actuel->suivant;
+    }
+
+    printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    printf(">>         \033[1;36mModifier un Produit\033[0m         <<\n");
+    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
+
+    printf("\033[1;31mProduit '%s' (Marque : %s) introuvable dans le magasin '%s'.\033[0m\n", nom_produit, nom_magasin);
+    printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+    getchar(); getchar();
+    return 0;
+}
+
 // ------------------------
 // Fonction ajouterProduit
 // ------------------------
@@ -128,9 +164,9 @@ void supprimerProduit(store *magasin, char *nom_produit, char *nom_marque) {
 void rechercherProduit(store *debut, char nom_produit[], char nom_marque[]) {
     int tmp = 0;
 
-    printf("=============================================\n");
-    printf("        \033[1;36m*** Rechercher un Produit ***\033[0m\n");
-    printf("=============================================\n");
+    printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    printf(">>      \033[1;36mRechercher un Produit\033[0m      <<\n");
+    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
 
     while(debut != NULL) {
         product *actuel = debut->produits;  // Pointeur temporaire
@@ -152,7 +188,7 @@ void rechercherProduit(store *debut, char nom_produit[], char nom_marque[]) {
     }
 
     if(tmp == 0) {
-        printf("\n\033[1;31mProduit '%s' (Marque : %s) introuvable dans le magasin.\033[0m\n", nom_produit, nom_marque);
+        printf("\033[1;31mProduit '%s' (Marque : %s) introuvable dans le magasin.\033[0m\n", nom_produit, nom_marque);
     }
 
     printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
@@ -289,26 +325,27 @@ void importerListe(store **listeMagasins) {
     getchar(); getchar();
 }
 
-// ----------------------
-// Affichage des données
-// ----------------------
+// -------------------------------------------
+// Affichage des produits de tous les magasins
+// -------------------------------------------
 void afficherMagasinsEtProduits(store *debut) {
     traitement();
     float total_prix, tmp;
 
+    printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    printf(">>   \033[1;36mListe des magasins et des produits\033[0m   <<\n");
+    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
+
     if (debut == NULL) {
-        printf("\nAucun magasin trouv%c.\n\n", 130);  // Utilisation de %c 130 pour "é"
+        printf("Aucun magasin trouv%c.\n\n", 130);
 
         printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
         getchar(); getchar();
         return;
     }
 
-    printf("==============================================\n");
-    printf("\033[1;36m  *** Liste des magasins et des produits ***\033[0m\n");
-    printf("==============================================\n");
     while (debut != NULL) {
-        printf("\nMagasin : %s\n", debut->nom_magasin);
+        printf("Magasin : %s\n", debut->nom_magasin);
         printf("---------------------------\n");
 
         if (debut->produits == NULL) {
@@ -318,10 +355,10 @@ void afficherMagasinsEtProduits(store *debut) {
             product *actuel = debut->produits;
             while (actuel != NULL) {
                 printf("  Produit : %s\n", actuel->nom_produit);
-                printf("    Cat%cgorie : %s\n", 130, actuel->nom_categorie);  // Utilisation de %c 130 pour "é"
+                printf("    Cat%cgorie : %s\n", 130, actuel->nom_categorie);
                 printf("    Marque : %s\n", actuel->nom_marque);
                 printf("    Rayon : %s\n", actuel->nom_rayon);
-                printf("    Quantit%c : %d\n", 130, actuel->quantite);  // Utilisation de %c 130 pour "é"
+                printf("    Quantit%c : %d\n", 130, actuel->quantite);
                 printf("    Prix/u : %.2f euro\n", actuel->prix);
 
                 tmp = actuel->prix * (float)(actuel->quantite);
@@ -334,6 +371,63 @@ void afficherMagasinsEtProduits(store *debut) {
         }
         debut = debut->suivant;
     }
+    printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+    getchar(); getchar();
+}
+
+// ----------------------------------------
+// Affichage des produits d'un seul magasin
+// ----------------------------------------
+void afficherMagasin(store *debut) {
+    traitement();
+    float total_prix = 0, tmp;
+    char nom_magasin[100];
+    int find = 0;
+
+    printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    printf(">>   \033[1;36mListe des produits du magasin\033[0m   <<\n");
+    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
+
+    printf("\033[1;33mNom du magasin\033[0m > ");
+    scanf("%99s", nom_magasin);
+
+    traitement();
+
+    while(debut != NULL) {
+        if(strcmp(debut->nom_magasin, nom_magasin) == 0) {
+            printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+            printf(">>   \033[1;36mListe des produits du magasin\033[0m   <<\n");
+            printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
+            printf("Magasin : %s\n", debut->nom_magasin);
+            printf("---------------------------\n");
+            product *actuel = debut->produits;
+            while(actuel != NULL) {
+                printf("  Produit : %s\n", actuel->nom_produit);
+                printf("    Cat%cgorie : %s\n", 130, actuel->nom_categorie);
+                printf("    Marque : %s\n", actuel->nom_marque);
+                printf("    Rayon : %s\n", actuel->nom_rayon);
+                printf("    Quantit%c : %d\n", 130, actuel->quantite);
+                printf("    Prix/u : %.2f euro\n", actuel->prix);
+
+                tmp = actuel->prix * (float)(actuel->quantite);
+                printf("    Prix total : %.2f euro\n", tmp);
+
+                total_prix += tmp;
+                actuel = actuel->suivant;
+            }
+
+            printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
+            getchar(); getchar();
+            return;
+        }
+        debut = debut->suivant;
+    }
+
+    printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+    printf(">>  \033[1;36mListe des produits du magasin\033[0m  <<\n");
+    printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
+    printf("Aucun magasin trouv%c avec le nom %-s.\n\n", 130, nom_magasin);
+
     printf("\nAppuyez sur Entr%ce pour revenir au menu principal...", 130);
     getchar(); getchar();
 }

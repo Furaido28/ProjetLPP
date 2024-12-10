@@ -32,11 +32,13 @@
   // --------------------------
   store* creerMagasin(char*);
   store* rechercherMagasin(store*, char*);
+  int rechercherProduitMagasin(store*, char*, char*, char *);
   void ajouterProduit(store*, char*, char*, char*, char*, int, float);
   void modifierProduit(store*, char*, char*, char*, char*, char*, char*, int, float);
   void supprimerProduit(store*, char*, char*);
   void rechercherProduit(store*, char[], char[]);
   void afficherMagasinsEtProduits(store*);
+  void afficherMagasin(store*);
   void archiverListe(store *listeMagasins);
   void importerListe(store **listeMagasins);
 #endif // STORE_H
